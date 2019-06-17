@@ -13,7 +13,7 @@ class PsychrometricFormulas {
         return `${xwxda}*(${pv})/((${pt})-(${pv}))`;
     }
 
-    // t: cell reference to temperature in °F
+    // t: formula for temperature in °F
     satPress(t: string) {
 
         var tR = `((${t}) + 459.67)`;
@@ -26,6 +26,7 @@ class PsychrometricFormulas {
         return `0.24*(${t}) + (${w})*(1061 + 0.444*(${t}))`
     }
 
+    // t: formula for temperature in °F
     dpv_dt(t: string) {
         var tR = `((${t}) + 459.67)`;
         return `(${this.satPress(tR)}) * (${-c8}/(${tR}*${tR}) + ${c10} + 2*${c11}*${tR} + 3*${c12}*${tR}*${tR} + ${c13}/${tR})`;
@@ -45,6 +46,17 @@ class PsychrometricFormulas {
     v_t_w(t: string, w: string, pt: string) {
         return `0.370486*((${t}) + 459.67) * (1 + 1.607858*(${w}))/(${pt})`;
     }
+
+    w_t_twb(t: string, twb: string, pt: string) {
+
+        var sat_w_twb = `${this.humidRatioPvPt(this.satPress(twb), "14.696")}`;
+
+        var above32 = `((1093-0.556*(${twb}))*(${sat_w_twb}) - 0.24*( (${t}) - (${twb}))) / ( 1093 + 0.444 * (${t}) - (${twb}))`;
+
+        return above32;
+    }
+
+
 }
 
 class viewModel {
