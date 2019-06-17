@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <title>Psychrometrics Excel Compiler</title>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js'></script>
+    <script type='text/javascript' src='psy.js'></script>
   </head>
   <body>
 
@@ -13,14 +15,13 @@
 
       <h1>Dry Bulb and Relative Humidity</h1>
 
-      <div><input /><label>Dry Bulb Cell</label></div>
-      <div><input /><label>Wet Bulb Cell</label></div>
-      <div><label>ω</label><span data-bind=""></span></div>
-      <div><label>RH</label><span data-bind=""></span></div>
-      <div><label>specific volume</label><span data-bind=""></span></div>
-      <div><label>enthalpy</label><span data-bind=""></span></div>
-      <div><label>partial pressure</label><span data-bind=""></span></div>
-      <div><label>dew point temp</label><span data-bind=""></span></div>
+      <div><input data-bind="textInput: drybulb"/><label>Dry Bulb Cell</label></div>
+      <div><input data-bind="textInput: rh"/><label>Relative Humidity Cell</label></div>
+      <div><label>ω</label><span data-bind="text: '=' + w()"></span></div>
+      <div><label>specific volume</label><span data-bind="text: '=' + v()" ></span></div>
+      <div><label>enthalpy</label><span data-bind="text: '=' + h()"></span></div>
+      <div><label>partial pressure</label><span data-bind="text: '=' + pw()" ></span></div>
+      <div><label>dew point temp</label><span data-bind="text: '=' + tdp()" ></span></div>
 
   </body>
 </html>

@@ -1,0 +1,19 @@
+{
+
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noEmitOnError": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es6"
+  },
+  "files": [
+      "psy.ts"
+  ],
+  "include": ["knockout.d.ts"]
+}
