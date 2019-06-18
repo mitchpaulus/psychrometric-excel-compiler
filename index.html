@@ -17,12 +17,17 @@
 
       <div><input data-bind="textInput: drybulb"/><label>Dry Bulb Cell</label></div>
       <div><input data-bind="textInput: rh"/><label>Relative Humidity Cell</label></div>
+      <div><label>pws in cell?</label><input type="checkbox" data-bind="checked: pws_use_cell" /> </div>
+      <div><label>pws</label><span data-bind="text: '=' + pws()"></span></div>
+      <div><label>ω in cell?</label><input type="checkbox" data-bind="checked: w_use_cell" /> </div>
       <div><label>ω</label><span data-bind="text: '=' + w()"></span></div>
       <div><label>specific volume</label><span data-bind="text: '=' + v()" ></span></div>
       <div><label>enthalpy</label><span data-bind="text: '=' + h()"></span></div>
       <div><label>partial pressure</label><span data-bind="text: '=' + pw()" ></span></div>
       <div><label>dew point temp</label></div>
       <div> <textarea style="width:90%" rows="10" data-bind="value: '=' + tdp()" ></textarea> </div>
+      <div><label>wet point temp</label></div>
+      <div><textarea style="width:90%" rows="10" data-bind="value: '=' + twb()" ></textarea></div>
 
   </body>
 </html>
