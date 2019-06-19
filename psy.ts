@@ -1,12 +1,12 @@
 /// <reference path="knockout.d.ts" />
 const xwxda: string = "0.621945";
 
-const c8: number = -1.0440397e4;
-const c9: number = -1.129465e1;
-const c10: number = -2.7022355e-2;
-const c11: number = 1.289036e-5;
-const c12: number = -2.4780681e-9;
-const c13: number = 6.5459673;
+const c8: string = "-1.0440397e4";
+const c9: string = "-1.129465e1";
+const c10: string = "-2.7022355e-2";
+const c11: string = "1.289036e-5";
+const c12: string = "-2.4780681e-9";
+const c13: string = "6.5459673";
 
 class PsychrometricFormulas {
     w_pv_pt(pv: string, pt: string) {
@@ -91,7 +91,7 @@ class viewModel {
     pws_cell = ko.observable("C1");
     pws_use_cell = ko.observable(true);
     pws = ko.pureComputed(() => {
-        return this.pws_use_cell ?
+        return this.pws_use_cell() ?
             this.pws_cell() :
             this.psy.satPress(this.drybulb());
     });
@@ -112,31 +112,8 @@ class viewModel {
         return `${this.psy.h_t_w(this.drybulb(), `(${this.w()})`)}`
     });
 
-    tdp = ko.pureComputed(() => {
-        return this.psy.tdp_pv(`(${this.pw()})`);
-    });
-
-    v = ko.pureComputed(() => {
-        return this.psy.v_t_w(this.drybulb(), this.w(), "14.696");
-    });
-
-    twb = ko.pureComputed(() => {
-        debugger;
-        if (!this.w_use_cell()) return "Cannot calculate without ω cell."
-
-        var twbGuesses: string[] = [];
-
-        twbGuesses[0] = `(${this.drybulb()} - 10)`;
-        for (let i = 1; i < 4; i++) {
-            var prevIteration = `(${twbGuesses[i - 1]})`
-            var num = `((${this.psy.w_t_twb(this.drybulb(), twbGuesses[i - 1], "14.696")}) - (${this.w()}) )`;
-            var denom = `( ${this.psy.dz_dtwb(this.drybulb(), twbGuesses[i - 1], "14.696")} )`;
-
-            twbGuesses[i] = `${prevIteration} - (${num}/${denom})`
-        }
-
-        return twbGuesses[3];
-    });
+    tdp = ko.pureComputed(() => this.psy.tdp_pv(`(${this.pw()})`));
+    v = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w(), "14.696"));
 
     constructor() {
 
@@ -152,7 +129,5 @@ function ready(fn: any) {
 }
 
 
-ready(() => {
-    ko.applyBindings(new viewModel());
-});
+ready(() => { ko.applyBindings(new viewModel()); });
 
