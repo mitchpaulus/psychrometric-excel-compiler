@@ -1,0 +1,6 @@
+saturated partial pressure|pws|1
+partial pressure|pw|1
+ω|w|1
+specific volume|v|2
+enthalpy|h|2
+dew point temperature|tdp|2

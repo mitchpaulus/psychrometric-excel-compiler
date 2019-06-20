@@ -20,10 +20,7 @@
         .formula {
             font-family: monospace
         }
-
     </style>
-
-
   </head>
   <body>
 
@@ -38,30 +35,32 @@
       <div><label>Relative Humidity Cell</label><input data-bind="textInput: rh"/></div>
 
       <div class="property-row">
-          <div><label>pws in cell?</label><input type="checkbox" data-bind="checked: pws_use_cell" /> </div>
-          <div><label>pws</label><span class="formula" data-bind="text: '=' + pws()"></span></div>
+          <div><label>saturated partial pressure in cell?</label><input type="checkbox" data-bind="checked: pws.use_cell" /> </div>
+          <div><label>saturated partial pressure</label><span class="formula" data-bind="text: '=' + pws.value()"></span></div>
       </div>
 
       <div class="property-row">
-          <div><label>ω in cell?</label><input type="checkbox" data-bind="checked: w_use_cell" /> </div>
-          <div><label>ω</label><span class="formula" data-bind="text: '=' + w()"></span></div>
+          <div><label>partial pressure in cell?</label><input type="checkbox" data-bind="checked: pw.use_cell" /> </div>
+          <div><label>partial pressure</label><span class="formula" data-bind="text: '=' + pw.value()"></span></div>
       </div>
 
       <div class="property-row">
-          <div><label>specific volume</label><span class="formula" data-bind="text: '=' + v()" ></span></div>
+          <div><label>ω in cell?</label><input type="checkbox" data-bind="checked: w.use_cell" /> </div>
+          <div><label>ω</label><span class="formula" data-bind="text: '=' + w.value()"></span></div>
+      </div>
+
+
+      <div class="property-row">
+          <div><label>specific volume</label><span class="formula" data-bind="text: '=' + v()"></span></div>
       </div>
 
       <div class="property-row">
           <div><label>enthalpy</label><span class="formula" data-bind="text: '=' + h()"></span></div>
       </div>
 
-      <div class="property-row">
-          <div><label>partial pressure</label><span class="formula" data-bind="text: '=' + pw()" ></span></div>
-      </div>
 
       <div class="property-row">
-          <div class="property-row"><label>dew point temp</label></div>
-          <div> <textarea style="width:90%" rows="10" data-bind="value: '=' + tdp()" ></textarea> </div>
+          <div><label>dew point temperature</label><span class="formula" data-bind="text: '=' + tdp()"></span></div>
       </div>
 
       <div class="property-row">
@@ -76,6 +75,13 @@
 
       <div> <label> Dry Bulb Cell </label> <input />  </div>
       <div> <label>Dew Point Cell</label> <input />  </div>
+
+
+      <h1>Dry Bulb and Wet Bulb Temperature</h1>
+
+      <div> <label>Dry Bulb Cell </label> <input />  </div>
+      <div> <label>Wet Bulb Temperature</label> <input />  </div>
+
 
 
   </body>

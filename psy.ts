@@ -1,8 +1,8 @@
 /// <reference path="knockout.d.ts" />
 const xwxda: string = "0.621945";
 
-const c8: string = "-1.0440397e4";
-const c9: string = "-1.129465e1";
+const c8:  string = "-1.0440397e4";
+const c9:  string = "-1.129465e1";
 const c10: string = "-2.7022355e-2";
 const c11: string = "1.289036e-5";
 const c12: string = "-2.4780681e-9";
@@ -16,15 +16,13 @@ class PsychrometricFormulas {
     // t: formula for temperature in °F
     satPress(t: string) {
 
-        var tR = `((${t}) + 459.67)`;
+        var tR = `(${t} + 459.67)`;
         var exp = `${c8}/${tR} + ${c9} + ${c10}*${tR} + ${c11}*${tR}*${tR} + ${c12}*${tR}*${tR}*${tR} + ${c13}*LN(${tR})`;
 
         return `EXP(${exp})`;
     }
 
-    h_t_w(t: string, w: string) {
-        return `0.24*(${t}) + (${w})*(1061 + 0.444*(${t}))`
-    }
+    h_t_w(t: string, w: string) => `0.24*(${t}) + (${w})*(1061 + 0.444*(${t}))`;
 
     // Derivative of saturated pressure w.r.t. temperature
     // t: formula for temperature in °F
@@ -81,6 +79,25 @@ class PsychrometricFormulas {
     }
 }
 
+
+class ComputedProperty {
+
+    use_cell = ko.observable(false);
+    cell: ko.Observable<string>;
+
+    value: ko.PureComputed<string>
+
+    constructor(computedFunction: () => string, initial_cell: string) {
+        this.value = ko.pureComputed(() => {
+            return this.use_cell() ?
+                this.cell() :
+                computedFunction();
+        });
+
+        this.cell = ko.observable(initial_cell);
+    }
+}
+
 class viewModel {
 
     psy = new PsychrometricFormulas();
@@ -88,32 +105,12 @@ class viewModel {
     drybulb = ko.observable("A1");
     rh = ko.observable("B1");
 
-    pws_cell = ko.observable("C1");
-    pws_use_cell = ko.observable(true);
-    pws = ko.pureComputed(() => {
-        return this.pws_use_cell() ?
-            this.pws_cell() :
-            this.psy.satPress(this.drybulb());
-    });
-
-    pw = ko.pureComputed(() => {
-        return `(${this.rh()}*${this.pws()})`
-    });
-
-    w_cell = ko.observable("C1");
-    w_use_cell = ko.observable(true);
-    w = ko.pureComputed(() => {
-        return this.w_use_cell() ?
-            this.w_cell() :
-            this.psy.w_pv_pt(this.pw(), "14.696");
-    });
-
-    h = ko.pureComputed(() => {
-        return `${this.psy.h_t_w(this.drybulb(), `(${this.w()})`)}`
-    });
-
-    tdp = ko.pureComputed(() => this.psy.tdp_pv(`(${this.pw()})`));
-    v = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w(), "14.696"));
+    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
+    pw  = new ComputedProperty(() => `(${this.rh()}*${this.pws.value()})`, "D1");
+    w   = new ComputedProperty(() => this.psy.w_pv_pt(this.pw.value(), "14.696")  , "E1");
+    h   = ko.pureComputed(()      => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
+    tdp = ko.pureComputed(()      => this.psy.tdp_pv(`(${this.pw.value()})`));
+    v   = ko.pureComputed(()      => this.psy.v_t_w(this.drybulb(), this.w.value(), "14.696"));
 
     constructor() {
 
@@ -127,7 +124,6 @@ function ready(fn: any) {
     document.addEventListener('DOMContentLoaded', fn);
   }
 }
-
 
 ready(() => { ko.applyBindings(new viewModel()); });
 
