@@ -1,5 +1,14 @@
 /// <reference path="knockout.d.ts" />
 const xwxda: string = "0.621945";
+const p_sea_level: string = "14.696"
+
+const c1: string = "-1.0214165e4";
+const c2: string = "-4.8932428";
+const c3: string = "-5.376579e-3";
+const c4: string = "1.9202377e-7";
+const c5: string = "3.5575832e-10";
+const c6: string = "-9.0344688e-14";
+const c7: string = "4.1635019";
 
 const c8:  string = "-1.0440397e4";
 const c9:  string = "-1.129465e1";
@@ -15,14 +24,17 @@ class PsychrometricFormulas {
 
     // t: formula for temperature in °F
     satPress(t: string) {
-
         var tR = `(${t} + 459.67)`;
-        var exp = `${c8}/${tR} + ${c9} + ${c10}*${tR} + ${c11}*${tR}*${tR} + ${c12}*${tR}*${tR}*${tR} + ${c13}*LN(${tR})`;
 
-        return `EXP(${exp})`;
+        var low_exp = `${c1}/${tR} + ${c2} + ${c3}*${tR} + ${c4}*${tR}*${tR} + ${c5}*${tR}*${tR}*${tR} + ${c6}*${tR}*${tR}*${tR}*${tR} + ${c7}*LN(${tR})`
+        var high_exp = `${c8}/${tR} + ${c9} + ${c10}*${tR} + ${c11}*${tR}*${tR} + ${c12}*${tR}*${tR}*${tR} + ${c13}*LN(${tR})`;
+
+        return `IF(${tR} > 491.67, EXP(${high_exp}), EXP(${low_exp}))`;
     }
 
-    h_t_w(t: string, w: string) => `0.24*(${t}) + (${w})*(1061 + 0.444*(${t}))`;
+    h_t_w(t: string, w: string) {
+       return  `0.24*(${t}) + (${w})*(1061 + 0.444*(${t}))`;
+    }
 
     // Derivative of saturated pressure w.r.t. temperature
     // t: formula for temperature in °F
@@ -49,7 +61,7 @@ class PsychrometricFormulas {
 
     w_t_twb(t: string, twb: string, pt: string) {
 
-        var sat_w_twb = `${this.w_pv_pt(this.satPress(twb), "14.696")}`;
+        var sat_w_twb = `${this.w_pv_pt(this.satPress(twb), p_sea_level)}`;
 
         var above32 = `((1093-0.556*(${twb}))*(${sat_w_twb}) - 0.24*((${t}) - (${twb}))) / (1093 + 0.444 * (${t}) - (${twb}))`;
 
@@ -70,7 +82,7 @@ class PsychrometricFormulas {
     // See post on how to calculate wet bulb temperature for description
     // of what I'm calling the 'z' function.
     dz_dtwb(t: string, twb: string, pt: string) {
-        var sat_w_twb = `${this.w_pv_pt(this.satPress(twb), "14.696")}`;
+        var sat_w_twb = `${this.w_pv_pt(this.satPress(twb), p_sea_level)}`;
 
         var N = `((1093 - 0.556*(${twb})) * (${sat_w_twb}) - 0.24 * (${t} - (${twb})))`;
         var D = `(1093 + 0.444*${t} - (${twb}))`;
@@ -98,8 +110,7 @@ class ComputedProperty {
     }
 }
 
-class viewModel {
-
+class T_rh_model {
     psy = new PsychrometricFormulas();
 
     drybulb = ko.observable("A1");
@@ -107,10 +118,56 @@ class viewModel {
 
     pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
     pw  = new ComputedProperty(() => `(${this.rh()}*${this.pws.value()})`, "D1");
-    w   = new ComputedProperty(() => this.psy.w_pv_pt(this.pw.value(), "14.696")  , "E1");
+    w   = new ComputedProperty(() => this.psy.w_pv_pt(this.pw.value(), p_sea_level)  , "E1");
     h   = ko.pureComputed(()      => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
     tdp = ko.pureComputed(()      => this.psy.tdp_pv(`(${this.pw.value()})`));
-    v   = ko.pureComputed(()      => this.psy.v_t_w(this.drybulb(), this.w.value(), "14.696"));
+    v   = ko.pureComputed(()      => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
+}
+
+class T_tdp_model {
+    psy = new PsychrometricFormulas();
+
+    drybulb = ko.observable("A1");
+    tdp = ko.observable("B1");
+
+    pw  = new ComputedProperty(() => this.psy.satPress(this.tdp()), "D1");
+    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
+    w   = new ComputedProperty(() => this.psy.w_pv_pt(this.pw.value(), p_sea_level)  , "E1");
+    rh = ko.pureComputed(() => `(${this.pw.value()})/(${this.pws.value()})`);
+    h  = ko.pureComputed(() => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
+    v  = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
+}
+
+class T_twb_model {
+    psy = new PsychrometricFormulas();
+
+    drybulb = ko.observable("A1");
+    twb     = ko.observable("B1");
+
+    w   = new ComputedProperty(() => this.psy.w_t_twb(this.drybulb(), this.twb(), "14.646"), "C1");
+    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
+    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "D1");
+    rh = ko.pureComputed(() => `(${this.pw.value()})/(${this.pws.value()})`);
+    h  = ko.pureComputed(() => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
+    v  = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
+    tdp = ko.pureComputed(()      => this.psy.tdp_pv(`(${this.pw.value()})`));
+}
+
+
+class viewModel {
+    psy = new PsychrometricFormulas();
+
+    drybulb = ko.observable("A1");
+    rh = ko.observable("B1");
+
+    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
+    pw  = new ComputedProperty(() => `(${this.rh()}*${this.pws.value()})`, "D1");
+    w   = new ComputedProperty(() => this.psy.w_pv_pt(this.pw.value(), p_sea_level)  , "E1");
+    h   = ko.pureComputed(()      => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
+    tdp = ko.pureComputed(()      => this.psy.tdp_pv(`(${this.pw.value()})`));
+    v   = ko.pureComputed(()      => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
+
+    t_tdp = new T_tdp_model();
 
     constructor() {
 
