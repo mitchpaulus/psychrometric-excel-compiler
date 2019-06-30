@@ -8,3 +8,9 @@ psy.js : psy.ts
 
 clean :
 	rm psy.js index.html
+
+deploy : index.html
+	rsync -rlt --progress --verbose index.html psy:/var/www/excel-psychrometrics
+
+.PHONY : deploy all
+

@@ -58,13 +58,10 @@ class PsychrometricFormulas {
         return `0.370486*((${t}) + 459.67) * (1 + 1.607858*(${w}))/(${pt})`;
     }
 
+    w_t_twb_wstar(t: string, twb: string, wstar: string, pt: string) {
 
-    w_t_twb(t: string, twb: string, pt: string) {
-
-        var sat_w_twb = `${this.w_pv_pt(this.satPress(twb), p_sea_level)}`;
-
-        var above32 = `((1093-0.556*(${twb}))*(${sat_w_twb}) - 0.24*((${t}) - (${twb}))) / (1093 + 0.444 * (${t}) - (${twb}))`;
-        var below32 = `( (1220-0.04* (${twb}) )*(${sat_w_twb}) - 0.24*((${t}) - (${twb}))  ) / (1220 + 0.444*(${t}) - 0.48*(${twb}))`;
+        var above32 = `((1093 - 0.556*(${twb}))*(${wstar}) - 0.24*((${t}) - (${twb}))) / (1093 + 0.444*(${t}) - (${twb}))`;
+        var below32 = `((1220 - 0.04*(${twb}))*(${wstar}) - 0.24*((${t}) - (${twb}))) / (1220 + 0.444*(${t}) - 0.48*(${twb}))`;
 
 
         return `IF((${twb}) > 32,${above32},${below32})`;
@@ -145,9 +142,10 @@ class T_twb_model {
     drybulb = ko.observable("A1");
     twb     = ko.observable("B1");
 
-    w   = new ComputedProperty(() => this.psy.w_t_twb(this.drybulb(), this.twb(), "14.646"), "C1");
-    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "D1");
-    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "E1");
+    w_sat_twb = new ComputedProperty(() => this.psy.w_pv_pt(this.psy.satPress(this.twb()), p_sea_level), "C1");
+    w   = new ComputedProperty(() => this.psy.w_t_twb_wstar(this.drybulb(), this.twb(), this.w_sat_twb.value(), p_sea_level), "D1");
+    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "E1");
+    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "F1");
     rh = ko.pureComputed(() => `(${this.pw.value()})/(${this.pws.value()})`);
     h  = ko.pureComputed(() => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
     v  = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
@@ -156,14 +154,9 @@ class T_twb_model {
 
 
 class viewModel {
-
     t_rh  = new T_rh_model();
     t_tdp = new T_tdp_model();
     t_twb = new T_twb_model();
-
-    constructor() {
-
-    }
 }
 
 function ready(fn: any) {

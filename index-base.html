@@ -40,19 +40,21 @@
   </head>
   <body>
 
-      <h1>What's the Point?</h1>
-      <p>The point is this. Implementing portable, add-in functionality to
-      Excel spreadsheets is a pain.
-      </p>
-
-      <p>
-      The psychrometric formulas aren't trivial to program, and a lot of time in the world is wasted
-      reprogramming these formulas in Excel. This page aims to speed that process up.
-      </p>
+      <h1>What's the Point of this Page?</h1>
+      <p>The point is this. Implementing portable, add-in functionality to spreadsheets (looking at you Excel) is a pain.
+So much time is wasted recreating these formulas in spreadsheets and implementing them in other programming languages. This page
+      allows you to dynamically adjust input spreadsheet cells or variable names and get the formulas you need. Never worry about typing in those
+      psychrometric constants again. Just modify the inputs for your particular spreadsheet and copy/paste the formula in.</p>
 
       <p>Apologies to the rest of the world - I'll get to implementing SI units at some point.</p>
 
-      <p>If you like this and want to help it spread, give it a star on <a href="https://github.com/mitchpaulus/psychrometric-excel-compiler">GitHub</a>!</p>
+      <p>If you like this and want to help it spread, give it a star on <a href="https://github.com/mitchpaulus/psychrometric-excel-compiler">GitHub</a>!
+      Also check out:
+      <ul>
+          <li><a href="https://psychrochart.com">psychrochart.com - Online dynamic psychrometric chart</a></li>
+          <li><a href="https://mitchellt.com">mitchellt.com - personal homepage</a> </li>
+      </ul>
+      </p>
 
       <p>
         Starting with known variables:
@@ -100,7 +102,7 @@
           <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_rh.h()"></span></div>
       </div>
 
-      <div data-bind="visible: !t_rh.pws.use_cell()"><span style="font-style: italic; color: red">Are you sure you don't want to store the partial pressure in a cell?</span></div>
+      <div data-bind="visible: !t_rh.pws.use_cell() && !t_rh.pw.use_cell()"><span style="font-style: italic; color: red">Are you sure you don't want to store the partial pressure in a cell?</span></div>
       <div class="property-row">
           <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_rh.tdp()"></span></div>
       </div>
@@ -177,6 +179,13 @@
           <label>Wet Bulb Cell (°F)</label> <input data-bind="textInput: t_twb.twb"/>
       </div>
 
+      <div class="property-row">
+          <div><label>Saturated Humidity Ratio at Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.w_sat_twb.use_cell" /> </div>
+          <div><label>Saturated Humidity Ratio at Wet Bulb Temperature (lbm H₂O/lbm d.a.)</label>
+         <input data-bind="visible: t_twb.w_sat_twb.use_cell, textInput: t_twb.w_sat_twb.cell" />
+              <span class="formula" data-bind="visible: !t_twb.w_sat_twb.use_cell(), text: '=' + t_twb.w_sat_twb.value()"> </span>
+     </div>
+      </div>
 
       <div class="property-row">
           <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_twb.w.use_cell" /> </div>
@@ -214,9 +223,11 @@
           <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.v()"></span></div>
       </div>
 
-      <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red"> Don't freak out. Just store the partial pressure in a separate cell and all this nonsense goes away.</span></div>
-      <div class="property-row">
-          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_twb.tdp()"></span></div>
+
+
+      <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the dew point temperature until the partial pressure cell is specified.</span></div>
+      <div  class="property-row">
+          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="visible: t_twb.pw.use_cell(),text: '=' + t_twb.tdp()"></span></div>
       </div>
 
 

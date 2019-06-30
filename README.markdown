@@ -1,8 +1,14 @@
 # Psychrometric Excel Compiler
 
-This web page will be used to generate the psychrometric formulas
-dynamically for Excel. This way, add-ins and VBA can completely be
-avoided.
+This is the source code for the webpage
+[excel-psychrometrics.com](https://excel-psychrometrics.com).
 
-This project is not finished quite yet.
+This page gets you the correct spreadsheet formulas for psychrometric
+calculations.
+
+Technologies used to build this page:
+
+ - TypeScript
+ - [knockout.js](https://knockoutjs.com)
+
 
