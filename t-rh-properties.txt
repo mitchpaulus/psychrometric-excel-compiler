@@ -1,0 +1,6 @@
+Saturated Partial Pressure|t_rh.pws|1|psia
+Partial Pressure|t_rh.pw|1|psia
+Humidity Ratio|t_rh.w|1|lbm H₂O/lbm d.a.
+Enthalpy|t_rh.h|2|BTU/lbm d.a.
+Dew Point Temperature|t_rh.tdp|2|°F
+Specific Volume|t_rh.v|2|ft³/lbm d.a.

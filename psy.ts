@@ -64,8 +64,10 @@ class PsychrometricFormulas {
         var sat_w_twb = `${this.w_pv_pt(this.satPress(twb), p_sea_level)}`;
 
         var above32 = `((1093-0.556*(${twb}))*(${sat_w_twb}) - 0.24*((${t}) - (${twb}))) / (1093 + 0.444 * (${t}) - (${twb}))`;
+        var below32 = `( (1220-0.04* (${twb}) )*(${sat_w_twb}) - 0.24*((${t}) - (${twb}))  ) / (1220 + 0.444*(${t}) - 0.48*(${twb}))`;
 
-        return above32;
+
+        return `IF((${twb}) > 32,${above32},${below32})`;
     }
 
     // Derivative of saturated humidity ratio w.r.t. wet bulb temperature
@@ -90,7 +92,6 @@ class PsychrometricFormulas {
         return `(${D}*${dN_dtwb} + ${N}) / (${D}*${D})`;
     }
 }
-
 
 class ComputedProperty {
 
@@ -145,8 +146,8 @@ class T_twb_model {
     twb     = ko.observable("B1");
 
     w   = new ComputedProperty(() => this.psy.w_t_twb(this.drybulb(), this.twb(), "14.646"), "C1");
-    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
-    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "D1");
+    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "D1");
+    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "E1");
     rh = ko.pureComputed(() => `(${this.pw.value()})/(${this.pws.value()})`);
     h  = ko.pureComputed(() => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
     v  = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
@@ -155,19 +156,10 @@ class T_twb_model {
 
 
 class viewModel {
-    psy = new PsychrometricFormulas();
 
-    drybulb = ko.observable("A1");
-    rh = ko.observable("B1");
-
-    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "C1");
-    pw  = new ComputedProperty(() => `(${this.rh()}*${this.pws.value()})`, "D1");
-    w   = new ComputedProperty(() => this.psy.w_pv_pt(this.pw.value(), p_sea_level)  , "E1");
-    h   = ko.pureComputed(()      => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
-    tdp = ko.pureComputed(()      => this.psy.tdp_pv(`(${this.pw.value()})`));
-    v   = ko.pureComputed(()      => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
-
+    t_rh  = new T_rh_model();
     t_tdp = new T_tdp_model();
+    t_twb = new T_twb_model();
 
     constructor() {
 
