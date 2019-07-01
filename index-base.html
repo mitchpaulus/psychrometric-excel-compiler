@@ -102,9 +102,9 @@ So much time is wasted recreating these formulas in spreadsheets and implementin
           <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_rh.h()"></span></div>
       </div>
 
-      <div data-bind="visible: !t_rh.pws.use_cell() && !t_rh.pw.use_cell()"><span style="font-style: italic; color: red">Are you sure you don't want to store the partial pressure in a cell?</span></div>
+      <div data-bind="visible: !t_rh.pws.use_cell() && !t_rh.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the dew point temperature until the partial pressure or saturated partial pressure cell is specified.</span></div>
       <div class="property-row">
-          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_rh.tdp()"></span></div>
+          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="visible: t_rh.pws.use_cell() || t_rh.pw.use_cell(), text: '=' + t_rh.tdp()"></span></div>
       </div>
 
       <div class="property-row">
@@ -227,7 +227,7 @@ So much time is wasted recreating these formulas in spreadsheets and implementin
 
       <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the dew point temperature until the partial pressure cell is specified.</span></div>
       <div  class="property-row">
-          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="visible: t_twb.pw.use_cell(),text: '=' + t_twb.tdp()"></span></div>
+          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="visible: t_twb.pw.use_cell(), text: '=' + t_twb.tdp()"></span></div>
       </div>
 
 
