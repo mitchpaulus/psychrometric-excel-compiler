@@ -1,6 +1,5 @@
-/// <reference path="knockout.d.ts" />
 const xwxda: string = "0.621945";
-const p_sea_level: string = "14.696"
+const p_sea_level: string = "14.696" // psia
 
 const c1: string = "-1.0214165e4";
 const c2: string = "-4.8932428";
@@ -149,15 +148,27 @@ class T_twb_model {
     rh = ko.pureComputed(() => `(${this.pw.value()})/(${this.pws.value()})`);
     h  = ko.pureComputed(() => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
     v  = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));
-    tdp = ko.pureComputed(()      => this.psy.tdp_pv(`(${this.pw.value()})`));
+    tdp = ko.pureComputed(() => this.psy.tdp_pv(`(${this.pw.value()})`));
 }
 
 
-class viewModel {
+class ViewModel {
     t_rh  = new T_rh_model();
     t_tdp = new T_tdp_model();
     t_twb = new T_twb_model();
 }
+
+function copyToClipboard(str: string) {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+};
 
 function ready(fn: any) {
   if ((document as any).attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
@@ -167,5 +178,9 @@ function ready(fn: any) {
   }
 }
 
-ready(() => { ko.applyBindings(new viewModel()); });
+var viewModel;
+ready(() => {
+    viewModel = new ViewModel();
+    ko.applyBindings(viewModel);
+});
 

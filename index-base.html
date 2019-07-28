@@ -1,13 +1,13 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Excel Psychrometrics Compiler</title>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js' defer></script>
     <script type='text/javascript' src='psy.js' defer></script>
 
     <style type="text/css">
-
         .original-input-grid-container {
             display: grid;
             grid-template-rows: 1fr 1fr;
@@ -15,7 +15,7 @@
             align-items: center;
         }
 
-        .original-input-grid-container > label {
+        .original-input-grid-container>label {
             white-space: nowrap;
             padding-right: 1em;
         }
@@ -30,33 +30,38 @@
             margin: 0 auto;
             font-family: sans-serif;
             color: #1e1e1e;
+            padding-bottom: 2em;
         }
 
         .formula {
             font-family: monospace;
         }
-
     </style>
-  </head>
-  <body>
+</head>
 
-      <h1>What's the Point of this Page?</h1>
-      <p>The point is this. Implementing portable, add-in functionality to spreadsheets (looking at you Excel) is a pain.
-So much time is wasted recreating these formulas in spreadsheets and implementing them in other programming languages. This page
-      allows you to dynamically adjust input spreadsheet cells or variable names and get the formulas you need. Never worry about typing in those
-      psychrometric constants again. Just modify the inputs for your particular spreadsheet and copy/paste the formula in.</p>
+<body>
 
-      <p>Apologies to the rest of the world - I'll get to implementing SI units at some point.</p>
+    <h1>What's the Point of this Page?</h1>
+    <p>The point is this. Implementing portable, add-in functionality to spreadsheets (looking at you Excel) is a pain.
+        So much time is wasted recreating these formulas in spreadsheets and implementing them in other programming
+        languages. This page
+        allows you to dynamically adjust input spreadsheet cells or variable names and get the formulas you need. Never
+        worry about typing in those
+        psychrometric constants again. Just modify the inputs for your particular spreadsheet and copy/paste the formula
+        in.</p>
 
-      <p>If you like this and want to help it spread, give it a star on <a href="https://github.com/mitchpaulus/psychrometric-excel-compiler">GitHub</a>!
-      Also check out:
-      <ul>
-          <li><a href="https://psychrochart.com">psychrochart.com - Online dynamic psychrometric chart</a></li>
-          <li><a href="https://mitchellt.com">mitchellt.com - personal homepage</a> </li>
-      </ul>
-      </p>
+    <p>Apologies to the rest of the world - I'll get to implementing SI units at some point.</p>
 
-      <p>
+    <p>If you like this and want to help it spread, give it a star on <a
+            href="https://github.com/mitchpaulus/psychrometric-excel-compiler">GitHub</a>!
+        Also check out:
+        <ul>
+            <li><a href="https://psychrochart.com">psychrochart.com - Online dynamic psychrometric chart</a></li>
+            <li><a href="https://mitchellt.com">mitchellt.com - personal homepage</a> </li>
+        </ul>
+    </p>
+
+    <p>
         Starting with known variables:
         <ul>
             <li><a href="#dry-bulb-relative-humidity">Dry Bulb and Relative Humidity</a></li>
@@ -64,173 +69,196 @@ So much time is wasted recreating these formulas in spreadsheets and implementin
             <li><a href="#dry-bulb-wet-bulb">Dry Bulb and Wet Bulb</a></li>
         </ul>
 
-      </p>
+    </p>
 
-      <h1 id="dry-bulb-relative-humidity">Dry Bulb and Relative Humidity</h1>
+    <h1 id="dry-bulb-relative-humidity">Dry Bulb and Relative Humidity</h1>
 
-      <div class="original-input-grid-container">
-          <label>Dry Bulb Cell (°F)</label><input data-bind="textInput: t_rh.drybulb"/>
-          <label>Relative Humidity Cell (0-1)</label><input data-bind="textInput: t_rh.rh"/>
-      </div>
+    <div class="original-input-grid-container">
+        <label>Dry Bulb Cell (°F)</label><input data-bind="textInput: t_rh.drybulb" />
+        <label>Relative Humidity Cell (0-1)</label><input data-bind="textInput: t_rh.rh" />
+    </div>
 
+    <div class="property-row">
+        <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_rh.pws.use_cell" /></div>
+        <div>
+            <label>Saturated Partial Pressure (psia)</label>
+            <input data-bind="visible: t_rh.pws.use_cell, textInput: t_rh.pws.cell" />
+            <span class="formula" data-bind="visible: !t_rh.pws.use_cell(), text: '=' + t_rh.pws.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_rh.pws.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_rh.pws.use_cell" /> </div>
-          <div><label>Saturated Partial Pressure (psia)</label>
-         <input data-bind="visible: t_rh.pws.use_cell, textInput: t_rh.pws.cell" />
-              <span class="formula" data-bind="visible: !t_rh.pws.use_cell(), text: '=' + t_rh.pws.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_rh.pw.use_cell" /></div>
+        <div>
+            <label>Partial Pressure (psia)</label>
+            <input data-bind="visible: t_rh.pw.use_cell, textInput: t_rh.pw.cell" />
+            <span class="formula" data-bind="visible: !t_rh.pw.use_cell(), text: '=' + t_rh.pw.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_rh.pw.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_rh.pw.use_cell" /> </div>
-          <div><label>Partial Pressure (psia)</label>
-         <input data-bind="visible: t_rh.pw.use_cell, textInput: t_rh.pw.cell" />
-              <span class="formula" data-bind="visible: !t_rh.pw.use_cell(), text: '=' + t_rh.pw.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_rh.w.use_cell" /></div>
+        <div>
+            <label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
+            <input data-bind="visible: t_rh.w.use_cell, textInput: t_rh.w.cell" />
+            <span class="formula" data-bind="visible: !t_rh.w.use_cell(), text: '=' + t_rh.w.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_rh.w.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_rh.w.use_cell" /> </div>
-          <div><label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
-         <input data-bind="visible: t_rh.w.use_cell, textInput: t_rh.w.cell" />
-              <span class="formula" data-bind="visible: !t_rh.w.use_cell(), text: '=' + t_rh.w.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_rh.h()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_rh.h())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_rh.h()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_rh.tdp()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_rh.tdp())">Copy to Clipboard</button></div>
+    </div>
 
-      <div data-bind="visible: !t_rh.pws.use_cell() && !t_rh.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the dew point temperature until the partial pressure or saturated partial pressure cell is specified.</span></div>
-      <div class="property-row">
-          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="visible: t_rh.pws.use_cell() || t_rh.pw.use_cell(), text: '=' + t_rh.tdp()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_rh.v()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_rh.v())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_rh.v()"></span></div>
-      </div>
-
-      <div class="property-row">
-          <div><label>Wet Bulb Temperature</label></div>
-          <p>If you're looking to calculate wet bulb temperature for many states, basic Excel is not going to
-          be the best option. You're really going to want an actual programming language for that.
-          </p>
-      </div>
-
-
-      <h1 id="dry-bulb-dew-point">Dry Bulb and Dew Point Temperature</h1>
-
-      <div class="original-input-grid-container">
-          <label>Dry Bulb Cell (°F)</label> <input data-bind="textInput: t_tdp.drybulb"/>
-          <label>Dew Point Cell (°F)</label> <input data-bind="textInput: t_tdp.tdp" />
-      </div>
-
+    <div class="property-row">
+        <div><label>Wet Bulb Temperature</label></div>
+        <p>If you're looking to calculate wet bulb temperature for many states, basic Excel is not going to
+            be the best option. You're really going to want an actual programming language for that.
+        </p>
+    </div>
 
 
-      <div class="property-row">
-          <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_tdp.pw.use_cell" /> </div>
-          <div><label>Partial Pressure (psia)</label>
-         <input data-bind="visible: t_tdp.pw.use_cell, textInput: t_tdp.pw.cell" />
-              <span class="formula" data-bind="visible: !t_tdp.pw.use_cell(), text: '=' + t_tdp.pw.value()"> </span>
-     </div>
-      </div>
+    <h1 id="dry-bulb-dew-point">Dry Bulb and Dew Point Temperature</h1>
 
-      <div class="property-row">
-          <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_tdp.pws.use_cell" /> </div>
-          <div><label>Saturated Partial Pressure (psia)</label>
-         <input data-bind="visible: t_tdp.pws.use_cell, textInput: t_tdp.pws.cell" />
-              <span class="formula" data-bind="visible: !t_tdp.pws.use_cell(), text: '=' + t_tdp.pws.value()"> </span>
-     </div>
-      </div>
+    <div class="original-input-grid-container">
+        <label>Dry Bulb Cell (°F)</label> <input data-bind="textInput: t_tdp.drybulb" />
+        <label>Dew Point Cell (°F)</label> <input data-bind="textInput: t_tdp.tdp" />
+    </div>
 
-      <div class="property-row">
-          <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_tdp.w.use_cell" /> </div>
-          <div><label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
-         <input data-bind="visible: t_tdp.w.use_cell, textInput: t_tdp.w.cell" />
-              <span class="formula" data-bind="visible: !t_tdp.w.use_cell(), text: '=' + t_tdp.w.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_tdp.pw.use_cell" /></div>
+        <div>
+            <label>Partial Pressure (psia)</label>
+            <input data-bind="visible: t_tdp.pw.use_cell, textInput: t_tdp.pw.cell" />
+            <span class="formula" data-bind="visible: !t_tdp.pw.use_cell(), text: '=' + t_tdp.pw.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_tdp.pw.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Relative Humidity (0-1)</label><span class="formula" data-bind="text: '=' + t_tdp.rh()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_tdp.pws.use_cell" /></div>
+        <div>
+            <label>Saturated Partial Pressure (psia)</label>
+            <input data-bind="visible: t_tdp.pws.use_cell, textInput: t_tdp.pws.cell" />
+            <span class="formula" data-bind="visible: !t_tdp.pws.use_cell(), text: '=' + t_tdp.pws.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_tdp.pws.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_tdp.h()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_tdp.w.use_cell" /></div>
+        <div>
+            <label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
+            <input data-bind="visible: t_tdp.w.use_cell, textInput: t_tdp.w.cell" />
+            <span class="formula" data-bind="visible: !t_tdp.w.use_cell(), text: '=' + t_tdp.w.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_tdp.w.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_tdp.v()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Relative Humidity (0-1)</label><span class="formula" data-bind="text: '=' + t_tdp.rh()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_tdp.rh())">Copy to Clipboard</button></div>
+    </div>
 
+    <div class="property-row">
+        <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_tdp.h()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_tdp.h())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Wet Bulb Temperature</label></div>
-          <p>If you're looking to calculate wet bulb temperature for many states, basic Excel is not going to
-          be the best option. You're really going to want an actual programming language for that.
-          </p>
-      </div>
+    <div class="property-row">
+        <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_tdp.v()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_tdp.v())">Copy to Clipboard</button></div>
+    </div>
 
-      <h1 id="dry-bulb-wet-bulb">Dry Bulb and Wet Bulb Temperature</h1>
+    <div class="property-row">
+        <div><label>Wet Bulb Temperature</label></div>
+        <p>If you're looking to calculate wet bulb temperature for many states, basic Excel is not going to
+            be the best option. You're really going to want an actual programming language for that.
+        </p>
+    </div>
 
-      <div class="original-input-grid-container">
-          <label>Dry Bulb Cell (°F)</label> <input data-bind="textInput: t_twb.drybulb"/>
-          <label>Wet Bulb Cell (°F)</label> <input data-bind="textInput: t_twb.twb"/>
-      </div>
+    <h1 id="dry-bulb-wet-bulb">Dry Bulb and Wet Bulb Temperature</h1>
 
-      <div class="property-row">
-          <div><label>Saturated Humidity Ratio at Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.w_sat_twb.use_cell" /> </div>
-          <div><label>Saturated Humidity Ratio at Wet Bulb Temperature (lbm H₂O/lbm d.a.)</label>
-         <input data-bind="visible: t_twb.w_sat_twb.use_cell, textInput: t_twb.w_sat_twb.cell" />
-              <span class="formula" data-bind="visible: !t_twb.w_sat_twb.use_cell(), text: '=' + t_twb.w_sat_twb.value()"> </span>
-     </div>
-      </div>
+    <div class="original-input-grid-container">
+        <label>Dry Bulb Cell (°F)</label> <input data-bind="textInput: t_twb.drybulb" />
+        <label>Wet Bulb Cell (°F)</label> <input data-bind="textInput: t_twb.twb" />
+    </div>
 
-      <div class="property-row">
-          <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_twb.w.use_cell" /> </div>
-          <div><label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
-         <input data-bind="visible: t_twb.w.use_cell, textInput: t_twb.w.cell" />
-              <span class="formula" data-bind="visible: !t_twb.w.use_cell(), text: '=' + t_twb.w.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>ω*, Saturated Humidity Ratio at Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.w_sat_twb.use_cell" /></div>
+        <div>
+            <label>ω*, Saturated Humidity Ratio at Wet Bulb Temperature (lbm H₂O/lbm d.a.)</label>
+            <input data-bind="visible: t_twb.w_sat_twb.use_cell, textInput: t_twb.w_sat_twb.cell" />
+            <span class="formula" data-bind="visible: !t_twb.w_sat_twb.use_cell(), text: '=' + t_twb.w_sat_twb.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.w_sat_twb.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pws.use_cell" /> </div>
-          <div><label>Saturated Partial Pressure (psia)</label>
-         <input data-bind="visible: t_twb.pws.use_cell, textInput: t_twb.pws.cell" />
-              <span class="formula" data-bind="visible: !t_twb.pws.use_cell(), text: '=' + t_twb.pws.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_twb.w.use_cell" /></div>
+        <div>
+            <label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
+            <input data-bind="visible: t_twb.w.use_cell, textInput: t_twb.w.cell" />
+            <span class="formula" data-bind="visible: !t_twb.w.use_cell(), text: '=' + t_twb.w.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.w.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pw.use_cell" /> </div>
-          <div><label>Partial Pressure (psia)</label>
-         <input data-bind="visible: t_twb.pw.use_cell, textInput: t_twb.pw.cell" />
-              <span class="formula" data-bind="visible: !t_twb.pw.use_cell(), text: '=' + t_twb.pw.value()"> </span>
-     </div>
-      </div>
+    <div class="property-row">
+        <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pws.use_cell" /></div>
+        <div>
+            <label>Saturated Partial Pressure (psia)</label>
+            <input data-bind="visible: t_twb.pws.use_cell, textInput: t_twb.pws.cell" />
+            <span class="formula" data-bind="visible: !t_twb.pws.use_cell(), text: '=' + t_twb.pws.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pws.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Relative Humidity (0-1)</label><span class="formula" data-bind="text: '=' + t_twb.rh()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pw.use_cell" /></div>
+        <div>
+            <label>Partial Pressure (psia)</label>
+            <input data-bind="visible: t_twb.pw.use_cell, textInput: t_twb.pw.cell" />
+            <span class="formula" data-bind="visible: !t_twb.pw.use_cell(), text: '=' + t_twb.pw.value()"> </span>
+        </div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pw.value())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.h()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Relative Humidity (0-1)</label><span class="formula" data-bind="text: '=' + t_twb.rh()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.rh())">Copy to Clipboard</button></div>
+    </div>
 
-      <div class="property-row">
-          <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.v()"></span></div>
-      </div>
+    <div class="property-row">
+        <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.h()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.h())">Copy to Clipboard</button></div>
+    </div>
 
+    <div class="property-row">
+        <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.v()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.v())">Copy to Clipboard</button></div>
+    </div>
 
+    <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the
+            dew point temperature until the partial pressure cell is specified.</span></div>
+    <div data-bind="visible: t_twb.pw.use_cell()" class="property-row">
+        <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_twb.tdp()"></span></div>
+        <div><button onclick="copyToClipboard('=' + viewModel.t_twb.tdp())">Copy to Clipboard</button></div>
+    </div>
 
-      <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the dew point temperature until the partial pressure cell is specified.</span></div>
-      <div  class="property-row">
-          <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="visible: t_twb.pw.use_cell(), text: '=' + t_twb.tdp()"></span></div>
-      </div>
+</body>
 
-
-  </body>
 </html>
-
