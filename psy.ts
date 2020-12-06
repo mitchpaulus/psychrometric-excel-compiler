@@ -17,8 +17,22 @@ const c12: string = "-2.4780681e-9";
 const c13: string = "6.5459673";
 
 class PsychrometricFormulas {
+    // Humidity ratio from partial vapor pressure and total pressure
     w_pv_pt(pv: string, pt: string) {
         return `${xwxda}*(${pv})/((${pt})-(${pv}))`;
+    }
+
+    // Fahrenheit to Rankine
+    tR_tF(t: string) {
+        return `(${t} + 459.67)`;
+    }
+
+    // t: formula for temperature in °F
+    satPressTAbs(tR: string) {
+        var low_exp = `${c1}/${tR} + ${c2} + ${c3}*${tR} + ${c4}*${tR}*${tR} + ${c5}*${tR}*${tR}*${tR} + ${c6}*${tR}*${tR}*${tR}*${tR} + ${c7}*LN(${tR})`
+        var high_exp = `${c8}/${tR} + ${c9} + ${c10}*${tR} + ${c11}*${tR}*${tR} + ${c12}*${tR}*${tR}*${tR} + ${c13}*LN(${tR})`;
+
+        return `IF(${tR} > 491.67, EXP(${high_exp}), EXP(${low_exp}))`;
     }
 
     // t: formula for temperature in °F
@@ -31,6 +45,7 @@ class PsychrometricFormulas {
         return `IF(${tR} > 491.67, EXP(${high_exp}), EXP(${low_exp}))`;
     }
 
+    // Enthalpy (BTU/lb d.a.) from dry bulb temperature (°F) and humidity ratio
     h_t_w(t: string, w: string) {
        return  `0.24*(${t}) + (${w})*(1061 + 0.444*(${t}))`;
     }
@@ -77,6 +92,9 @@ class PsychrometricFormulas {
         return `${xwxda} * (${numerator}) / (${denominator})`;
     }
 
+    // Partial pressure from humidity ratio and total pressure
+    pv_w(w: string, pt: string) { return `(${pt} * ${w}) / (${xwxda} + ${w})`; }
+
     // See post on how to calculate wet bulb temperature for description
     // of what I'm calling the 'z' function.
     dz_dtwb(t: string, twb: string, pt: string) {
@@ -89,6 +107,8 @@ class PsychrometricFormulas {
     }
 }
 
+// This class is used to represent a property that may be calculated,
+// or is set as a hard-coded cell address.
 class ComputedProperty {
 
     use_cell = ko.observable(false);
@@ -138,13 +158,16 @@ class T_tdp_model {
 class T_twb_model {
     psy = new PsychrometricFormulas();
 
-    drybulb = ko.observable("A1");
-    twb     = ko.observable("B1");
+    drybulb = ko.observable("B1");
+    twb     = ko.observable("B2");
 
-    w_sat_twb = new ComputedProperty(() => this.psy.w_pv_pt(this.psy.satPress(this.twb()), p_sea_level), "C1");
-    w   = new ComputedProperty(() => this.psy.w_t_twb_wstar(this.drybulb(), this.twb(), this.w_sat_twb.value(), p_sea_level), "D1");
-    pws = new ComputedProperty(() => this.psy.satPress(this.drybulb()), "E1");
-    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "F1");
+    twb_abs = new ComputedProperty(() => this.psy.tR_tF(this.twb()), "B3");
+    pws_star = new ComputedProperty(() => this.psy.satPressTAbs(this.twb_abs.value()), "B4");
+    w_sat_twb = new ComputedProperty(() => this.psy.w_pv_pt(this.pws_star.value(), p_sea_level), "B5");
+    w   = new ComputedProperty(() => this.psy.w_t_twb_wstar(this.drybulb(), this.twb(), this.w_sat_twb.value(), p_sea_level), "B6");
+    drybulb_abs = new ComputedProperty(() => this.psy.tR_tF(this.drybulb()), "B7"  )
+    pws = new ComputedProperty(() => this.psy.satPressTAbs(this.drybulb_abs.value()), "B8");
+    pw  = new ComputedProperty(() => `(${p_sea_level}*(${this.w.value()})) / (${xwxda} + (${this.w.value()}))`, "B9");
     rh = ko.pureComputed(() => `(${this.pw.value()})/(${this.pws.value()})`);
     h  = ko.pureComputed(() => `${this.psy.h_t_w(this.drybulb(), `(${this.w.value()})`)}`);
     v  = ko.pureComputed(() => this.psy.v_t_w(this.drybulb(), this.w.value(), p_sea_level));

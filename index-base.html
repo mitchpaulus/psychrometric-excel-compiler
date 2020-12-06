@@ -209,67 +209,98 @@
                 <label>Wet Bulb Cell (°F)</label> <input data-bind="textInput: t_twb.twb" />
             </div>
 
-            <div class="property-row">
-                <div><label>ω*, Saturated Humidity Ratio at Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.w_sat_twb.use_cell" /></div>
-                <div>
-                    <label>ω*, Saturated Humidity Ratio at Wet Bulb Temperature (lbm H₂O/lbm d.a.)</label>
-                    <input data-bind="visible: t_twb.w_sat_twb.use_cell, textInput: t_twb.w_sat_twb.cell" />
-                    <span class="formula" data-bind="visible: !t_twb.w_sat_twb.use_cell(), text: '=' + t_twb.w_sat_twb.value()"> </span>
-                </div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.w_sat_twb.value())">Copy to Clipboard</button></div>
-            </div>
 
-            <div class="property-row">
-                <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_twb.w.use_cell" /></div>
-                <div>
-                    <label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
-                    <input data-bind="visible: t_twb.w.use_cell, textInput: t_twb.w.cell" />
-                    <span class="formula" data-bind="visible: !t_twb.w.use_cell(), text: '=' + t_twb.w.value()"> </span>
-                </div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.w.value())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>Absolute Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.twb_abs.use_cell" /></div>
+            <div>
+                <label>Absolute Wet Bulb Temperature (°R)</label>
+                <input data-bind="visible: t_twb.twb_abs.use_cell, textInput: t_twb.twb_abs.cell" />
+                <span class="formula" data-bind="visible: !t_twb.twb_abs.use_cell(), text: '=' + t_twb.twb_abs.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.twb_abs.value())">Copy to Clipboard</button></div>
+        </div>
 
-            <div class="property-row">
-                <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pws.use_cell" /></div>
-                <div>
-                    <label>Saturated Partial Pressure (psia)</label>
-                    <input data-bind="visible: t_twb.pws.use_cell, textInput: t_twb.pws.cell" />
-                    <span class="formula" data-bind="visible: !t_twb.pws.use_cell(), text: '=' + t_twb.pws.value()"> </span>
-                </div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pws.value())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>pws* Saturated Partial Pressure at Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.pws_star.use_cell" /></div>
+            <div>
+                <label>pws* Saturated Partial Pressure at Wet Bulb Temperature (psia)</label>
+                <input data-bind="visible: t_twb.pws_star.use_cell, textInput: t_twb.pws_star.cell" />
+                <span class="formula" data-bind="visible: !t_twb.pws_star.use_cell(), text: '=' + t_twb.pws_star.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pws_star.value())">Copy to Clipboard</button></div>
+        </div>
 
-            <div class="property-row">
-                <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pw.use_cell" /></div>
-                <div>
-                    <label>Partial Pressure (psia)</label>
-                    <input data-bind="visible: t_twb.pw.use_cell, textInput: t_twb.pw.cell" />
-                    <span class="formula" data-bind="visible: !t_twb.pw.use_cell(), text: '=' + t_twb.pw.value()"> </span>
-                </div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pw.value())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>ω*, Saturated Humidity Ratio at Wet Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.w_sat_twb.use_cell" /></div>
+            <div>
+                <label>ω*, Saturated Humidity Ratio at Wet Bulb Temperature (lbm H₂O/lbm d.a.)</label>
+                <input data-bind="visible: t_twb.w_sat_twb.use_cell, textInput: t_twb.w_sat_twb.cell" />
+                <span class="formula" data-bind="visible: !t_twb.w_sat_twb.use_cell(), text: '=' + t_twb.w_sat_twb.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.w_sat_twb.value())">Copy to Clipboard</button></div>
+        </div>
 
-            <div class="property-row">
-                <div><label>Relative Humidity (0-1)</label><span class="formula" data-bind="text: '=' + t_twb.rh()"></span></div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.rh())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>Humidity Ratio in cell?</label><input type="checkbox" data-bind="checked: t_twb.w.use_cell" /></div>
+            <div>
+                <label>Humidity Ratio (lbm H₂O/lbm d.a.)</label>
+                <input data-bind="visible: t_twb.w.use_cell, textInput: t_twb.w.cell" />
+                <span class="formula" data-bind="visible: !t_twb.w.use_cell(), text: '=' + t_twb.w.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.w.value())">Copy to Clipboard</button></div>
+        </div>
 
-            <div class="property-row">
-                <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.h()"></span></div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.h())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>Absolute Dry Bulb Temperature in cell?</label><input type="checkbox" data-bind="checked: t_twb.drybulb_abs.use_cell" /></div>
+            <div>
+                <label>Absolute Dry Bulb Temperature (°R)</label>
+                <input data-bind="visible: t_twb.drybulb_abs.use_cell, textInput: t_twb.drybulb_abs.cell" />
+                <span class="formula" data-bind="visible: !t_twb.drybulb_abs.use_cell(), text: '=' + t_twb.drybulb_abs.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.drybulb_abs.value())">Copy to Clipboard</button></div>
+        </div>
 
-            <div class="property-row">
-                <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.v()"></span></div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.v())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>Saturated Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pws.use_cell" /></div>
+            <div>
+                <label>Saturated Partial Pressure (psia)</label>
+                <input data-bind="visible: t_twb.pws.use_cell, textInput: t_twb.pws.cell" />
+                <span class="formula" data-bind="visible: !t_twb.pws.use_cell(), text: '=' + t_twb.pws.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pws.value())">Copy to Clipboard</button></div>
+        </div>
 
-            <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the
-                    dew point temperature until the partial pressure cell is specified.</span></div>
-            <div data-bind="visible: t_twb.pw.use_cell()" class="property-row">
-                <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_twb.tdp()"></span></div>
-                <div><button onclick="copyToClipboard('=' + viewModel.t_twb.tdp())">Copy to Clipboard</button></div>
+        <div class="property-row">
+            <div><label>Partial Pressure in cell?</label><input type="checkbox" data-bind="checked: t_twb.pw.use_cell" /></div>
+            <div>
+                <label>Partial Pressure (psia)</label>
+                <input data-bind="visible: t_twb.pw.use_cell, textInput: t_twb.pw.cell" />
+                <span class="formula" data-bind="visible: !t_twb.pw.use_cell(), text: '=' + t_twb.pw.value()"> </span>
             </div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.pw.value())">Copy to Clipboard</button></div>
+        </div>
+
+        <div class="property-row">
+            <div><label>Relative Humidity (0-1)</label><span class="formula" data-bind="text: '=' + t_twb.rh()"></span></div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.rh())">Copy to Clipboard</button></div>
+        </div>
+
+        <div class="property-row">
+            <div><label>Enthalpy (BTU/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.h()"></span></div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.h())">Copy to Clipboard</button></div>
+        </div>
+
+        <div class="property-row">
+            <div><label>Specific Volume (ft³/lbm d.a.)</label><span class="formula" data-bind="text: '=' + t_twb.v()"></span></div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.v())">Copy to Clipboard</button></div>
+        </div>
+
+        <div data-bind="visible: !t_twb.pw.use_cell()"><span style="font-style: italic; color: red">Not going to show the dew point temperature until the partial pressure cell is specified.</span></div>
+        <div data-bind="visible: t_twb.pw.use_cell()" class="property-row">
+            <div><label>Dew Point Temperature (°F)</label><span class="formula" data-bind="text: '=' + t_twb.tdp()"></span></div>
+            <div><button onclick="copyToClipboard('=' + viewModel.t_twb.tdp())">Copy to Clipboard</button></div>
+        </div>
+
 
 </body>
 

@@ -1,5 +1,8 @@
+Absolute Wet Bulb Temperature|t_twb.twb_abs|1|°R
+pws* Saturated Partial Pressure at Wet Bulb Temperature|t_twb.pws_star|1|psia
 ω*, Saturated Humidity Ratio at Wet Bulb Temperature|t_twb.w_sat_twb|1|lbm H₂O/lbm d.a.
 Humidity Ratio|t_twb.w|1|lbm H₂O/lbm d.a.
+Absolute Dry Bulb Temperature|t_twb.drybulb_abs|1|°R
 Saturated Partial Pressure|t_twb.pws|1|psia
 Partial Pressure|t_twb.pw|1|psia
 Relative Humidity|t_twb.rh|2|0-1
