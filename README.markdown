@@ -1,10 +1,8 @@
 # Psychrometric Excel Compiler
 
-This is the source code for the webpage
-[excel-psychrometrics.com](https://excel-psychrometrics.com).
+This is the source code for the webpage [excel-psychrometrics.com](https://excel-psychrometrics.com).
 
-This page gets you the correct spreadsheet formulas for psychrometric
-calculations.
+This page gets you the correct spreadsheet formulas for psychrometric calculations.
 
 Technologies used to build this page:
 
@@ -13,6 +11,7 @@ Technologies used to build this page:
 
 ## Building
 
+Only dependency is TypeScript.
 Can build single target page `index.html` by using command `make`.
 
 To help build the HTML UI, there is an awk script that can be used like:
