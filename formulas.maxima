@@ -16,3 +16,7 @@ diff(N, Twb);
 eq1: ((1093 - 0.556*Twb) * Ws_Twb - 0.24 * (Tdb - Twb)) / (1093 + 0.444*Tdb - Twb);
 
 diff(eq1, Twb);
+
+weq: W = (0.621945 * Pw) / (Pta - Pw);
+
+solve(weq, Pw);
