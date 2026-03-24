@@ -1,0 +1,18 @@
+depends(A, T);
+depends(B, T);
+depends(C, T);
+
+display2d: false;
+
+pws: 145.03774 * ((2*C)/(((B*B - 4*A*C)^0.5) - B))^4;
+
+diff(pws, T);
+
+depends(Ws_Twb, Twb);
+N:(1093 - 0.556*Twb) * Ws_Twb - 0.24 * (Tdb - Twb);
+
+diff(N, Twb);
+
+eq1: ((1093 - 0.556*Twb) * Ws_Twb - 0.24 * (Tdb - Twb)) / (1093 + 0.444*Tdb - Twb);
+
+diff(eq1, Twb);
