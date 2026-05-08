@@ -116,10 +116,7 @@ theta , T_R / 491.688,
 
 # h_Tdb_W
 
-=LAMBDA(
-    Tdb, W
-        0.24 * Tdb + W*(1061 + 0.444*Tdb)
-)
+=LAMBDA(Tdb, W, 0.24 * Tdb + W*(1061 + 0.444*Tdb))
 
 
 # h_Tdb_Twb
@@ -178,9 +175,9 @@ theta , T_R / 491.688,
 # h_Tdb_Tdp
 
 =LAMBDA(
-    Tdb, Tdp, Pt,
+    Tdb, Tdp, [Pt],
     LET(
-        Pta, IF(ISOMITTED(3), 14.696, Pt),
+        Pta, IF(ISOMITTED(Pt), 14.696, Pt),
         W, W_Tdb_Tdp(Tdb, Tdp, Pta),
         h_Tdb_W(Tdb, W)
     )

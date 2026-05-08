@@ -16,4 +16,8 @@ Sub AddPsyLambdas
     AddOrUpdateLambda Name := "Tdp_Pw", RefersTo:= "=LAMBDA(Pw, IF(Pw >= 0.08865, Tdp_Pw_Hi(Pw), Tdp_Pw_Lo(Pw)))"
     AddOrUpdateLambda Name := "Pw_W", RefersTo:= "=LAMBDA(W, [Pt], LET(Pta, IF(ISOMITTED(Pt), 14.696, Pt), (200000*Pta*W)/(200000*W+124389)))"
     AddOrUpdateLambda Name := "Tdp_W", RefersTo:= "=LAMBDA(W, [Pt], LET(Pta, IF(ISOMITTED(Pt), 14.696, Pt), Pw, Pw_W(W, Pta), Tdp_Pw(Pw)))"
+    AddOrUpdateLambda Name := "h_Tdb_W", RefersTo:= "=LAMBDA(Tdb, W, 0.24 * Tdb + W*(1061 + 0.444*Tdb))"
+    AddOrUpdateLambda Name := "W_Tdb_Tdp", RefersTo:= "=LAMBDA(Tdb, Tdp, [Pt], LET(Pta, IF(ISOMITTED(Pt), 14.696, Pt), Ws_T(Tdp, Pta)))"
+    AddOrUpdateLambda Name := "h_Tdb_Tdp", RefersTo := "=LAMBDA( Tdb, Tdp, [Pt], LET( Pta, IF(ISOMITTED(Pt), 14.696, Pt), W, W_Tdb_Tdp(Tdb, Tdp, Pta), h_Tdb_W(Tdb, W)))"
 End Sub
+
